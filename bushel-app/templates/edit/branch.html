@@ -1,0 +1,21 @@
+{% extends "base.html" %} {% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/edit.css') }}" />
+<div class="page-body">
+    <form method="POST" action="/edit/{{root_name}}/{{branch_name}}">
+        <h1>
+            Create branch
+        </h1>
+        <label for="branch-name">Branch Name
+            <input id="branch-name" class="" type="text" name="new_branch_name" placeholder="Branch name" autofocus="">
+        </label>
+        <br/>
+        <label for="branch-uri">Branch URI
+            <input id="branch-uri" class="" type="text" name="new_branch_uri" placeholder="Branch uri" value="{{branch_name}}" autofocus="">
+        </label>
+        <br/>
+        <button class="">
+            <span>Save Branch</span>
+        </button>
+    </form>
+</div>
+{% endblock %}

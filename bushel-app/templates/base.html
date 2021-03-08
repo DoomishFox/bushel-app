@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bushel</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
+</head>
+
+<body>
+    <div>
+        <header role="banner" itemscope="itemscope">
+            <div class="nav-bar">
+                <div class="nav-bar-brand">
+                    <a class="nav-bar-button hidden-link" href="{{ url_for('main.index') }}">
+                        <div class="nav-bar-logo">
+                            <img class="nav-bar-logo-img" src="{{ url_for('static', filename='img/bushel-icon-small.png') }}" />
+                            <span class="nav-bar-logo-text is-title">bushel</span>
+                        </div>
+                    </a>
+                </div>
+                <span class="nav-bar-separator"></span>
+                <nav class="nav-bar-nav" role="navigation">
+                    <ul class="nav-bar-nav-list">
+                        {% if root_name is defined %}
+                        <li class="nav-bar-item">
+                            <a class="has-hover-underline hidden-link" href="{{ url_for( 'main.root_home', root_name=root_name ) }}">
+                                <span>Home</span>
+                            </a>
+                        </li>
+                        <!--<li class="nav-bar-item-separator"></li>-->
+                        {% endif %}
+                        <!--
+                        <li class="nav-bar-item-separator"></li>
+                        <li class="nav-bar-item">
+                            <a class="has-hover-underline hidden-link" href="{{ url_for( 'main.leaf', root_name=root_name, branch_name=branch_name, page_name=page_name ) }}">
+                                <span>Save Page</span>
+                            </a>
+                        </li>
+                        <li class="nav-bar-item-separator"></li>
+                        <li class="nav-bar-item">
+                            <a class="has-hover-underline hidden-link" href="{{ url_for( 'edit.leaf', root_name=root_name, branch_name=branch_name, page_name=page_name ) }}">
+                                <span>Edit Page</span>
+                            </a>
+                        </li>
+                    -->
+                    </ul>
+                </nav>
+                <span class="nav-bar-spacer"></span>
+                <ul class="nav-bar-nav">
+                    {% if g.user is not none %}
+                    <li class="nav-bar-item">
+                        <a class="has-hover-underline hidden-link" href="{{ url_for( 'auth.logout' ) }}">
+                            <span>Logout</span>
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="nav-bar-item">
+                        <a class="has-hover-underline hidden-link" href="{{ url_for( 'auth.login' ) }}">
+                            <span>Login</span>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </header>
+    </div>
+    {% block content %} {% endblock %}
+</body>
+
+</html>

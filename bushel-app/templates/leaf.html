@@ -1,0 +1,6 @@
+{% extends "base.html" %} {% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/leaf.css') }}" />
+<div class="page-body">
+    {% if page_exists == true %}{% include 'content/' + root_name + '/' + branch_name + '/' + page_name + '.html' %}{% else %}{% include 'not_found.html' %}{% endif %}
+</div>
+{% endblock %}

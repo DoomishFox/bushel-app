@@ -1,0 +1,15 @@
+{% extends "base.html" %} {% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/edit.css') }}" />
+<div class="page-body">
+    <form method="POST" action="/edit/{{root_name}}">
+        <h1>
+            Create root
+        </h1>
+        <input class="" type="text" name="new_root_name" placeholder="Root uri" value="{{root_name}}" autofocus="">
+        <br/>
+        <button class="">
+            <span>Save Root</span>
+        </button>
+    </form>
+</div>
+{% endblock %}

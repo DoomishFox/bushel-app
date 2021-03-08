@@ -1,0 +1,18 @@
+{% extends "base.html" %} {% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}" />
+<div class="page-body">
+    <div class="center-container">
+        <div class="center-focus">
+            <img class="center-focus-img" src="{{ url_for('static', filename='img/bushel-logo-banner.png') }}" />
+            <h1> A Simple Digital Garden.
+            </h1>
+            <span class="text-separator"></span>
+            <p>Bushel is an easy to manage digital gardening application for when you want to make your notes available to the internet, but dont want the structure of a blog.</p>
+            <div class="link-group">
+                <a class="page-link" href="/root/introduction/an-introduction">What is Bushel<span>&gt</span></a>
+                <a class="page-link" href="https://github.com/DoomishFox">View on GitHub<span>&gt</span></a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

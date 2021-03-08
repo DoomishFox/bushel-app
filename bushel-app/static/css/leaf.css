@@ -1,0 +1,10 @@
+h1 {
+    font-size: 2rem;
+    font-weight: 500;
+    line-height: 1.3;
+    word-wrap: break-word;
+}
+
+.page-body {
+    margin: 20px;
+}
