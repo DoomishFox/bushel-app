@@ -1,6 +1,7 @@
 import os
 import jinja2
 from flask import Flask
+from . import error_pages
 
 def create_app(test_config=None):
     app = Flask(__name__)
@@ -15,6 +16,8 @@ def create_app(test_config=None):
     else:
         # load the test config if passed in
         app.config.from_mapping(test_config)
+    
+    app.register_error_handler(404, error_pages.page_not_found)
 
     # ensure the instance folder exists
     try:

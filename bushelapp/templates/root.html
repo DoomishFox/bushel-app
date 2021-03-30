@@ -1,7 +1,6 @@
 {% extends "base.html" %} {% block content %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/root.css') }}" />
 <div class="page-body">
-    {% if page_exists == true %}
     <h1>
         Branches
     </h1>
@@ -12,6 +11,5 @@
         </li>
         {% endfor %}
     </ul>
-    {% else %}{% include 'not_found.html' %}{% endif %}
 </div>
 {% endblock %}

@@ -59,10 +59,10 @@ class Leaf(Base):
     date = Column(Float, nullable=False,
         default=lambda: int(time.time()))
 
-    def create(self, uri, branch):
+    def create(self, uri, name, branch):
         self.parent_id = branch.id
         self.uri = uri
-        self.name = uri
+        self.name = name
         self.date = int(time.time())
         return self
 
