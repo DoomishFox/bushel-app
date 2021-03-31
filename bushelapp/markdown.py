@@ -41,12 +41,12 @@ def formatMarkdown(leaf_obj, user_obj):
     creation_success = False
 
     # using the md file get all the text
-    with open(base_path / md_name, 'r') as md_file:
+    with open(base_path / md_name, 'r', encoding='utf-8') as md_file:
         # attempt to format markdown
         content = gitHubPost(md_file.read(), "markdown", None).decode('utf-8')
         # if its successful create html file
         if content is not None:
-            with open(content_path / html_name, 'w') as html_file:
+            with open(content_path / html_name, 'w', encoding='utf-8') as html_file:
                 # add the creation date here
                 # regex for the first headline
                 header_re = re.compile(r"<h1>(.|\n|\n\r)*?<\/h1>", re.MULTILINE)
@@ -63,7 +63,7 @@ def formatMarkdown(leaf_obj, user_obj):
                     header_metadata += '</time></li>'
                     header_metadata += '\n<li class="metadata-user">'
                     if user_obj.alias is not None:
-                        header_metadata += user_obj.alias
+                        header_metadata += user_obj.alias.decode('utf-8')
                     else:
                         header_metadata += user_obj.username
                     header_metadata += '</li>\n</ul>'
@@ -109,6 +109,7 @@ def setLeafContent(leaf_obj, user_obj, leaf_content):
     # update the leaf in the db
     db_session.flush()
     db_session.query(Leaf).filter(Leaf.id == leaf_obj.id).update({'date': int(time.time())})
+    db_session.commit()
     # refresh just in case, i cant find anything on if this would refresh or not
     # so i doubt it
     leaf_obj = db_session.query(Leaf).filter(Leaf.id == leaf_obj.id).first()

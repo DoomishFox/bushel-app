@@ -15,7 +15,10 @@ def load_logged_in_user():
         g.user = None
     else:
         auth_token_obj = db_session.query(AuthToken).filter(AuthToken.token == token).first()
-        g.user = db_session.query(User).filter(User.id == auth_token_obj.user_id).first()
+        if auth_token_obj is not None:
+            g.user = db_session.query(User).filter(User.id == auth_token_obj.user_id).first()
+        else:
+            g.user = None
 
 @edit.route('/<root_name>/<branch_name>/<page_name>', methods=('GET', 'POST'), strict_slashes=False)
 def leaf(root_name, branch_name, page_name):
