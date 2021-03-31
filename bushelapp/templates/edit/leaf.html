@@ -1,0 +1,28 @@
+{% extends "base.html" %} {% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/leaf.css') }}" />
+<div class="page-body">
+    <form method="POST" action="/edit/{{root_name}}/{{branch_name}}/{{page_name}}">
+        <span>Editing</span>
+        <h1>{{ page_name }}</h1>
+        {% with messages = get_flashed_messages() %} {% if messages %}
+        <ul class="flashes">
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %} {% endwith %}
+        <label for="leaf-name">Leaf Name
+            <input id="leaf-name" class="" type="text" name="leaf_name" placeholder="Leaf name" value="{{leaf_name}}" autofocus="">
+        </label>
+        <br>
+        <label for="leaf-content">
+            <br>
+            <textarea id="leaf-content" class="" name="leaf_content">{{leaf_content}}</textarea>
+        </label>
+        <br>
+        <button type="submit" class="">
+            <span>Save Leaf</span>
+        </button>
+    </form>
+</div>
+{% endblock %}

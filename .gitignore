@@ -11,6 +11,11 @@ __pycache__/
 .vs
 *.code-workspace
 
+# bushel content
+content/
+store/
+!store/an-introduction.md
+
 # Distribution / packaging
 .Python
 build/

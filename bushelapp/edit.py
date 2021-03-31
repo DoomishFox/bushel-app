@@ -2,7 +2,8 @@ import pathlib
 from flask import Blueprint, flash, g, redirect, render_template, request, session, url_for
 from werkzeug.security import check_password_hash, generate_password_hash
 from .database import db_session
-from .models import User, AuthToken, Root, Branch
+from .models import User, AuthToken, Root, Branch, Leaf
+from .markdown import getLeafContent, setLeafContent
 
 edit = Blueprint('edit', __name__, url_prefix='/edit')
 
@@ -13,14 +14,48 @@ def load_logged_in_user():
     if token is None:
         g.user = None
     else:
-        g.user = db_session.query(AuthToken).filter(AuthToken.token == token).first()
+        auth_token_obj = db_session.query(AuthToken).filter(AuthToken.token == token).first()
+        g.user = db_session.query(User).filter(User.id == auth_token_obj.user_id).first()
 
-@edit.route('/<root_name>/<branch_name>/<page_name>', strict_slashes=False)
+@edit.route('/<root_name>/<branch_name>/<page_name>', methods=('GET', 'POST'), strict_slashes=False)
 def leaf(root_name, branch_name, page_name):
+    leaf_name = "New Leaf"
+    leaf_content = "New Leaf Content"
     if g.user is None:
         # if theres no user session we need to redirect to the login page with a next url
         return redirect(url_for('auth.login', next='/edit/' + root_name + '/' + branch_name + '/' + page_name))
-    return render_template("edit/edit.html", editing=True, root_name=root_name, branch_name=branch_name, page_name=page_name)
+    
+    root_obj = db_session.query(Root).filter(Root.uri == root_name).first()
+    if root_obj is not None:
+        # root object found, check for branch object
+        branch_obj = db_session.query(Branch).filter(Branch.parent_id == root_obj.id).filter(Branch.uri == branch_name).first()
+        if branch_obj is not None:
+            # branch object found
+            leaf_obj = db_session.query(Leaf).filter(Leaf.parent_id == branch_obj.id).filter(Leaf.uri == page_name).first()
+            if leaf_obj is not None:
+                leaf_name = leaf_obj.name
+                leaf_content = getLeafContent(leaf_obj)
+        
+            if request.method == 'POST':
+                # then we need to get our form data and do stuff with it
+                print('attempting leaf edit')
+
+                leaf_name = request.form.get('leaf_name')
+                leaf_content = request.form.get('leaf_content')
+
+                if leaf_obj is None:
+                    # create one if it doesnt exist
+                    leaf_obj = Leaf().create(page_name, leaf_name, branch_obj)
+                    db_session.add(leaf_obj)
+                    db_session.commit()
+                    
+                setLeafContent(leaf_obj, g.user, leaf_content)
+                return redirect(url_for('main.leaf', root_name=root_name, branch_name=branch_name, page_name=page_name))
+        else:
+            flash("Cannot create branch, branch already exists!")
+    else:
+        flash("Cannot create branch, root does not exist!")
+    return render_template("edit/leaf.html", editing=True, root_name=root_name, branch_name=branch_name, page_name=page_name, leaf_name=leaf_name, leaf_content=leaf_content)
 
 @edit.route('/<root_name>/<branch_name>', methods=('GET', 'POST'), strict_slashes=False)
 def branch(root_name, branch_name):
@@ -43,8 +78,7 @@ def branch(root_name, branch_name):
                     branch_obj = Branch().create(uri, name, duplicate_root)
                     db_session.add(branch_obj)
                     db_session.commit()
-                    # create physical folder structure
-                    folder_path = pathlib.Path("project/templates/content/" + root_name + '/' + str(branch_obj.uri)).mkdir(parents=True, exist_ok=True)
+
                     return redirect(url_for('main.branch_home', root_name=root_name, branch_name=branch_name))
                 else:
                     flash("Cannot create branch, branch already exists!")
@@ -71,9 +105,9 @@ def root(root_name):
                 root_obj = Root().create(uri)
                 db_session.add(root_obj)
                 db_session.commit()
-                # create physical folder structure
-                folder_path = pathlib.Path("project/templates/content/" + str(root_obj.uri)).mkdir(parents=True, exist_ok=True)
-            return redirect(url_for('main.root_home', root_name=root_name))
+                return redirect(url_for('main.root_home', root_name=root_name))
+            else:
+                flash("Cannot create branch, root does not exist!")
 
     # here we edit a root if it exists, or if it doesnt exist we create it
     return render_template("edit/root.html", root_name=root_name)

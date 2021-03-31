@@ -84,3 +84,35 @@ def formatMarkdown(leaf_obj, user_obj):
         return html_name
     else:
         return None
+
+def getLeafContent(leaf_obj):
+    """Get text of leaf markdown file"""
+    md_name = leaf_obj.uri + '.md'
+    base_path = pathlib.Path("bushelapp/store/")
+    
+    # using the md file get all the text
+    with open(base_path / md_name, 'r') as md_file:
+        content = md_file.read()
+    
+    return content
+
+def setLeafContent(leaf_obj, user_obj, leaf_content):
+    """Set text of leaf markdown file"""
+    md_name = leaf_obj.uri + '.md'
+    base_path = pathlib.Path("bushelapp/store/")
+    
+    # using the md file get all the text
+    with open(base_path / md_name, 'w') as md_file:
+        # normalize line endings
+        md_file.write(leaf_content.replace('\r\n', '\n').replace('\r', '\n'))
+    
+    # update the leaf in the db
+    db_session.flush()
+    db_session.query(Leaf).filter(Leaf.id == leaf_obj.id).update({'date': int(time.time())})
+    # refresh just in case, i cant find anything on if this would refresh or not
+    # so i doubt it
+    leaf_obj = db_session.query(Leaf).filter(Leaf.id == leaf_obj.id).first()
+
+    formatMarkdown(leaf_obj, user_obj)
+    
+    return leaf_obj
