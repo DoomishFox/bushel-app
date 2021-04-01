@@ -15,6 +15,10 @@ def redirect_dest(fallback):
         return redirect(fallback)
     return redirect(dest_url)
 
+def scrub_db_tokens():
+    # scrub the db of expired tokens
+    return
+
 @auth.before_app_request
 def load_logged_in_user():
     token = session.get('token')
@@ -22,7 +26,11 @@ def load_logged_in_user():
     if token is None:
         g.user = None
     else:
-        g.user = db_session.query(AuthToken).filter(AuthToken.token == token).first()
+        auth_token_obj = db_session.query(AuthToken).filter(AuthToken.token == token).first()
+        if auth_token_obj is not None:
+            g.user = db_session.query(User).filter(User.id == auth_token_obj.user_id).first()
+        else:
+            g.user = None
 
 @auth.route('/login', methods=('GET', 'POST'), strict_slashes=False)
 def login():
@@ -50,6 +58,7 @@ def login():
                 session.permanent = True
             
             # might just have this function scrub expired tokens hmm
+            scrub_db_tokens()
 
             # then attempt a redirect based on the 'next' url parameter
             return redirect_dest(fallback=url_for('main.index'))
@@ -65,7 +74,13 @@ def logout():
     # get the token from the session
     token = session['token']
 
-    # remove the token
+    # remove the token from the browser
+    session['token'] = None
+
+    # expire the token
+
+    # scrub old tokens
+    scrub_db_tokens()
 
     # then attempt a redirect based on the 'next' url parameter
     return redirect_dest(fallback=url_for('main.index'))

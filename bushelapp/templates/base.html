@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Bushel</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme-light.css') }}" />
 </head>
 
 <body>
@@ -30,39 +31,17 @@
                                 <span>Home</span>
                             </a>
                         </li>
-                        <!--<li class="nav-bar-item-separator"></li>-->
+                        {% endif %} {% if root is defined %}
+                        <li class="nav-bar-item">
+                            <a class="has-hover-underline hidden-link" href="{{ url_for( 'main.root_home', root_name=root.uri ) }}">
+                                <span>Home</span>
+                            </a>
+                        </li>
                         {% endif %}
-                        <!--
-                        <li class="nav-bar-item-separator"></li>
-                        <li class="nav-bar-item">
-                            <a class="has-hover-underline hidden-link" href="{{ url_for( 'main.leaf', root_name=root_name, branch_name=branch_name, page_name=page_name ) }}">
-                                <span>Save Page</span>
-                            </a>
-                        </li>
-                        <li class="nav-bar-item-separator"></li>
-                        <li class="nav-bar-item">
-                            <a class="has-hover-underline hidden-link" href="{{ url_for( 'edit.leaf', root_name=root_name, branch_name=branch_name, page_name=page_name ) }}">
-                                <span>Edit Page</span>
-                            </a>
-                        </li>
-                    -->
                     </ul>
                 </nav>
                 <span class="nav-bar-spacer"></span>
                 <ul class="nav-bar-nav">
-                    {% if g.user is not none %}
-                    <li class="nav-bar-item">
-                        <a class="has-hover-underline hidden-link" href="{{ url_for( 'auth.logout' ) }}">
-                            <span>Logout</span>
-                        </a>
-                    </li>
-                    {% else %}
-                    <li class="nav-bar-item">
-                        <a class="has-hover-underline hidden-link" href="{{ url_for( 'auth.login' ) }}">
-                            <span>Login</span>
-                        </a>
-                    </li>
-                    {% endif %}
                 </ul>
             </div>
         </header>

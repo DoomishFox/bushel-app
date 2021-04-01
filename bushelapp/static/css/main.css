@@ -8,6 +8,7 @@ body {
     margin: 0;
     padding: 0;
     font-family: "Segoe UI", "SegoeUI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    min-height: 100vh;
 }
 
 header {
@@ -25,13 +26,13 @@ a:not(.hidden-link):hover {
 }
 
 .hidden-link {
-    color: black;
+    color: var(--header-link);
 }
 
 .has-hover-underline:hover::after {
     content: "";
     display: block;
-    border-bottom: 2px solid black;
+    border-bottom: 2px solid var(--header-link);
     position: absolute;
     left: 0;
     right: 0;
@@ -52,7 +53,7 @@ a:not(.hidden-link):hover {
     height: 64px;
     min-height: 64px;
     justify-content: space-between;
-    border-bottom: 1px solid #E8E8E8;
+    border-bottom: 1px solid var(--header-separator);
     font-size: 12pt;
 }
 
@@ -69,7 +70,7 @@ a:not(.hidden-link):hover {
     cursor: pointer;
     line-height: 100%;
     text-align: center;
-    color: black;
+    color: var(--header-link);
 }
 
 .nav-bar-logo-img {
@@ -87,7 +88,7 @@ a:not(.hidden-link):hover {
     content: "";
     display: inline-block;
     height: 2rem;
-    border-left: 1px solid #E8E8E8;
+    border-left: 1px solid var(--header-separator);
     margin-top: 1rem;
     margin-left: 1rem;
     margin-right: 0rem;
@@ -118,7 +119,7 @@ a:not(.hidden-link):hover {
     content: "";
     display: inline-block;
     height: 2rem;
-    border-left: 1px solid #E8E8E8;
+    border-left: 1px solid var(--header-separator);
     margin-top: 0rem;
     margin-left: 1rem;
     margin-right: 1rem;

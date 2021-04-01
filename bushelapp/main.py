@@ -18,7 +18,7 @@ def leaf(root_name, branch_name, page_name):
             # branch object found, go ahead and allow template to complete
             leaf_obj = db_session.query(Leaf).filter(Leaf.parent_id == branch_obj.id).filter(Leaf.uri == page_name).first()
             if leaf_obj is not None:
-                return render_template("leaf.html", root_name=root_name, branch_name=branch_name, page_name=page_name)
+                return render_template("leaf.html", root=root_obj, branch=branch_obj, page=leaf_obj)
     abort(404)
 
 @main.route('/<root_name>/<branch_name>', strict_slashes=False)
