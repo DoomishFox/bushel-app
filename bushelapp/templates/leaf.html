@@ -1,7 +1,8 @@
 {% extends "base.html" %} {% block content %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/leaf.css') }}" />
+<link rel="stylesheet" href="{{ url_for('static', filename='css/syntax/json.css') }}" />
 <div class="edit-bar">
-    <ul class="edit-bar-nav-list">
+    <ul class="edit-bar-nav-list horizontal-scroll">
         <li class="edit-bar-item">
             <a class="" href="{{ url_for( 'main.branch_home', root_name=root.uri, branch_name=branch.uri ) }}">
                 <span>{{branch.name}}</span>
@@ -16,18 +17,18 @@
     <ul class="edit-bar-nav-list">
         {% if g.user is not none %}
         <li class="edit-bar-button">
-            <a class="button hidden-link" href="{{ url_for( 'edit.leaf', root_name=root.uri, branch_name=branch.uri, page_name=page.uri ) }}">
+            <a class="button-light" href="{{ url_for( 'edit.leaf', root_name=root.uri, branch_name=branch.uri, page_name=page.uri ) }}">
                 <span>Edit Page</span>
             </a>
         </li>
         <li class="edit-bar-button">
-            <a class="button hidden-link" href="{{ url_for( 'auth.logout' ) }}">
+            <a class="button-light" href="{{ url_for( 'auth.logout' ) }}">
                 <span>Logout</span>
             </a>
         </li>
         {% else %}
         <li class="edit-bar-button">
-            <a class="button hidden-link" href="{{ url_for( 'auth.login' ) }}">
+            <a class="button-light" href="{{ url_for( 'auth.login' ) }}">
                 <span>Login</span>
             </a>
         </li>
@@ -39,7 +40,7 @@
         {% include 'content/' + page.uri + '.html' %}
     </div>
     <div class="backlinks">
-        <span class="title">Backlinks</span>
+        <span class="title-sm">Backlinks</span>
         <div class="backlinks-content">
             <ul id="backlinks-list">
             </ul>

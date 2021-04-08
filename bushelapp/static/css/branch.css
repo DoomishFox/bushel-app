@@ -8,3 +8,45 @@ h1 {
 .page-body {
     margin: 20px;
 }
+
+.leaf-nav-list {
+    padding: 0;
+    list-style-type: none;
+}
+
+.leaf-nav-item {
+    display: block;
+    margin-top: 10px;
+    height: 3em;
+    line-height: 3em;
+}
+
+.leaf-link {
+    min-width: 200px;
+    color: var(--text-primary);
+    background-color: var(--background-standout);
+    border-radius: 2px;
+    margin: 0;
+}
+
+.leaf-link::before {
+    content: "🍂";
+    display: inline-block;
+    margin-right: 10px;
+    height: 3em;
+    width: 3em;
+    text-align: center;
+    text-decoration: none;
+    background-color: white;
+    border: 2px solid var(--background-standout);
+    border-bottom-left-radius: 2px;
+    border-top-left-radius: 2px;
+}
+
+.leaf-link span {
+    margin-right: 10px;
+}
+
+.leaf-link::before:hover {
+    text-decoration: none;
+}

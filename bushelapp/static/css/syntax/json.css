@@ -1,0 +1,19 @@
+.highlight-source-json::before {
+    content: "JSON";
+}
+
+.highlight-source-json {
+    color: var(--code-color);
+}
+
+.highlight-source-json .pl-s {
+    color: var(--code-string);
+}
+
+.highlight-source-json .pl-pds {
+    color: var(--code-string);
+}
+
+.highlight-source-json .pl-c1 {
+    color: var(--code-type);
+}

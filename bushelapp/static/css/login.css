@@ -1,0 +1,51 @@
+body {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.page-body {
+    flex: 1;
+    padding: 20px;
+}
+
+.center-focus {
+    width: 300px;
+}
+
+.main-header {
+    margin-bottom: 0;
+    padding: 10px;
+    background-color: var(--page-bg);
+    border: 2px solid var(--background-standout);
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+}
+
+.form-body {
+    padding: 10px;
+    margin-bottom: 20px;
+    background-color: var(--background-standout);
+    border-radius: 2px;
+}
+
+.button {
+    width: 300px;
+}
+
+.input {
+    height: 30px;
+    width: 80%;
+    outline: none;
+    padding: 5px;
+    position: relative;
+    margin: 10px;
+    border-style: none;
+    border: 1px solid var(--text-subtle);
+    border-radius: 2px;
+}
+
+.checkbox {
+    font-size: 0.9em;
+    color: var(--text-inactive)
+}

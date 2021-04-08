@@ -8,3 +8,22 @@ h1 {
 .page-body {
     margin: 20px;
 }
+
+.branch-nav-list {
+    padding: 0;
+    list-style-type: none;
+}
+
+.branch-nav-item {
+    display: block;
+    margin-top: 10px;
+}
+
+.branch-link {
+    color: var(--text-primary);
+    padding: 15px !important;
+    min-width: 200px;
+    background-color: var(--background-standout);
+    padding: 0;
+    margin: 0;
+}

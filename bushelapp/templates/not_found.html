@@ -1,9 +1,9 @@
 {% extends "base.html" %} {% block content %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/branch.css') }}" />
 <div class="page-body">
-    <h1>
-        Not Found.
+    <h1 class="">
+        404 - Not Found.
     </h1>
-    <p>The page you are looking for was not found. Did you mean to <a href="/edit/{{root_name}}{% if branch_name is defined %}/{{branch_name}}{% if page_name is defined %}/{{page_name}}{% endif %}{% endif %}">create it?</a></p>
+    <p>The page you are looking for was not found.</p>
 </div>
 {% endblock %}
