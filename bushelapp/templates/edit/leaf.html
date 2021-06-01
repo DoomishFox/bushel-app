@@ -1,27 +1,63 @@
 {% extends "base.html" %} {% block content %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/leaf.css') }}" />
 <link rel="stylesheet" href="{{ url_for('static', filename='css/edit.css') }}" />
-<div class="page-body">
-    <form method="POST" action="/edit/{{root_name}}/{{branch_name}}/{{page_name}}">
-        {% with messages = get_flashed_messages() %} {% if messages %}
-        <ul class="flashes">
-            {% for message in messages %}
-            <li>{{ message }}</li>
-            {% endfor %}
+<form method="POST" action="{{ url_for( 'edit.leaf', root_name=root_name, branch_name=branch_name, page_name=page_name ) }}">
+    <div class="edit-bar">
+        <ul class="edit-bar-nav-list horizontal-scroll">
+            <li class="edit-bar-item">
+                <a class="" href="{{ url_for( 'main.branch_home', root_name=root_name, branch_name=branch_name ) }}">
+                    <span>{{branch_name}}</span>
+                </a>
+            </li>
+            <li class="edit-bar-item list-separator">/</li>
+            <li class="edit-bar-item">
+                <input id="page-name" class="input" type="text" name="page_name" placeholder="Page name" value="{{page_name}}">
+            </li>
         </ul>
-        {% endif %} {% endwith %}
-        <label for="leaf-name">Leaf Name
-            <input id="leaf-name" class="" type="text" name="leaf_name" placeholder="Leaf name" value="{{leaf_name}}" autofocus="">
-        </label>
-        <br>
-        <label for="leaf-content">
-            <br>
+        <span class="nav-bar-spacer"></span>
+        <ul class="edit-bar-nav-list">
+            <li class="edit-bar-button">
+                <a class="button-light" href="{{ url_for( 'main.leaf', root_name=root_name, branch_name=branch_name, page_name=page_name ) }}">
+                    <span>Return</span>
+                </a>
+            </li>
+            <li class="edit-bar-button">
+                <a class="button-light" href="{{ url_for( 'auth.logout' ) }}">
+                    <span>Logout</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="page-body">
+        <div class="content-body">
+            {% with messages = get_flashed_messages() %} {% if messages %}
+            <ul class="flashes">
+                {% for message in messages %}
+                <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %} {% endwith %}
             <textarea id="leaf-content" class="" name="leaf_content">{{leaf_content}}</textarea>
-        </label>
-        <br>
-        <button type="submit" class="">
-            <span>Save Leaf</span>
-        </button>
-    </form>
-</div>
+        </div>
+        <div class="backlinks">
+            <input id="leaf-name" class="input fill-width" type="text" name="leaf_name" placeholder="Leaf name" value="{{leaf_name}}">
+            <hr>
+            <div class="backlinks-content">
+                <!-- can put other information in the leaf backlinks list -->
+                <button type="submit" class="button fill-width">
+                    <span>Save Leaf</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</form>
+<!-- SimpleMDE -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+<script>
+    var simplemde = new SimpleMDE({
+        forceSync: true,
+        toolbar: false
+    });
+</script>
 {% endblock %}

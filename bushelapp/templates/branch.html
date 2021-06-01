@@ -1,15 +1,17 @@
 {% extends "base.html" %} {% block content %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/branch.css') }}" />
 <div class="page-body">
-    <h1 class="">
-        Leaves
-    </h1>
-    <ul class="leaf-nav-list">
-        {% for leaf in leaves %}
-        <li class="leaf-nav-item">
-            <a class="leaf-link highlight-link" href="{{ url_for('main.leaf', root_name=root_name, branch_name=branch_name, page_name=leaf.uri ) }}">{{leaf.name}}<span>&gt</span></a>
-        </li>
-        {% endfor %}
-    </ul>
+    <div class="page-content">
+        <h1 class="">
+            Leaves
+        </h1>
+        <ul class="leaf-nav-list">
+            {% for leaf in leaves %}
+            <li class="leaf-nav-item">
+                <a class="leaf-link highlight-link" href="{{ url_for('main.leaf', root_name=root_name, branch_name=branch_name, page_name=leaf.uri ) }}">{{leaf.name}}<span>&gt</span></a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
 </div>
 {% endblock %}

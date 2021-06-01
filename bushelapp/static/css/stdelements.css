@@ -1,3 +1,34 @@
+/* Columns */
+
+@media not screen and (max-width: 800px) {
+    .page-body {
+        padding: 20px;
+        margin-top: 0;
+        display: flex;
+        flex-direction: row;
+        align-items: stretch;
+    }
+    .content-body {
+        flex: auto;
+    }
+    .backlinks {
+        margin-left: 20px;
+        flex: 0 0 15rem;
+    }
+}
+
+@media only screen and (max-width: 800px) {
+    .page-body {
+        padding: 20px;
+        margin-top: 0;
+    }
+}
+
+.backlinks {
+    border-radius: 2px;
+}
+
+
 /* Centering Elements */
 
 .center-container {
@@ -319,6 +350,15 @@ h5:not([class]):hover::after {
 }
 
 
+/* Element Decoration */
+
+.underline::after {
+    content: "";
+    display: block;
+    border-bottom: 2px solid var(--background-standout);
+}
+
+
 /* Buttons */
 
 button {
@@ -355,4 +395,18 @@ button {
 .button-light:hover {
     background-color: var(--background-standout);
     text-decoration: none;
+}
+
+
+/* Input Elements */
+
+.input {
+    height: 30px;
+    outline: none;
+    padding: 5px;
+    position: relative;
+    border-style: none;
+    border: 1px solid var(--text-subtle);
+    border-radius: 2px;
+    box-sizing: border-box;
 }

@@ -5,6 +5,7 @@ body {
 }
 
 .page-body {
+    all: unset;
     flex: 1;
     padding: 20px;
 }

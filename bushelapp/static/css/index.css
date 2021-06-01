@@ -5,6 +5,8 @@ body {
 }
 
 .page-body {
+    /* this is a tad ugly but oh well */
+    all: unset;
     flex: 1;
     padding: 20px;
 }

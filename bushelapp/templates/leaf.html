@@ -22,13 +22,13 @@
             </a>
         </li>
         <li class="edit-bar-button">
-            <a class="button-light" href="{{ url_for( 'auth.logout' ) }}">
+            <a class="button-light" href="{{ url_for( 'auth.logout', next='/' + root.uri + '/' + branch.uri + '/' + page.uri ) }}">
                 <span>Logout</span>
             </a>
         </li>
         {% else %}
         <li class="edit-bar-button">
-            <a class="button-light" href="{{ url_for( 'auth.login' ) }}">
+            <a class="button-light" href="{{ url_for( 'auth.login', next='/' + root.uri + '/' + branch.uri + '/' + page.uri ) }}">
                 <span>Login</span>
             </a>
         </li>

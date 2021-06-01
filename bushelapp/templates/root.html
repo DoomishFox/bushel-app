@@ -1,15 +1,17 @@
 {% extends "base.html" %} {% block content %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/root.css') }}" />
 <div class="page-body">
-    <h1 class="">
-        Branches
-    </h1>
-    <ul class="branch-nav-list">
-        {% for branch in branches %}
-        <li class="branch-nav-item">
-            <a class="branch-link highlight-link" href="{{ url_for('main.branch_home', root_name=root_name, branch_name=branch.uri ) }}">{{branch.name}}<span>&gt</span></a>
-        </li>
-        {% endfor %}
-    </ul>
+    <div class="page-content">
+        <h1 class="">
+            Branches
+        </h1>
+        <ul class="branch-nav-list">
+            {% for branch in branches %}
+            <li class="branch-nav-item">
+                <a class="branch-link highlight-link" href="{{ url_for('main.branch_home', root_name=root_name, branch_name=branch.uri ) }}">{{branch.name}}<span>&gt</span></a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
 </div>
 {% endblock %}

@@ -7,34 +7,6 @@ a {
     color: var(--link-color);
 }
 
-.page-body {
-    padding: 20px;
-    margin-top: 0;
-}
-
-@media not screen and (max-width: 800px) {
-    .content-body {
-        display: inline-block;
-        width: 75%;
-    }
-    .backlinks {
-        float: right;
-        width: 19%;
-    }
-}
-
-@media only screen and (max-width: 800px) {
-    .backlinks::before {
-        content: "";
-        display: block;
-    }
-}
-
-.backlinks {
-    border-radius: 2px;
-    padding-top: 20px;
-}
-
 .link-group {
     text-align: center;
     line-height: 50px;

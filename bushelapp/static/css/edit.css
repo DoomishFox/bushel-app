@@ -1,11 +1,9 @@
 button {}
 
-textarea {
-    min-width: 99%;
-    max-width: 99%;
-    min-height: 60vh;
+.fill-width {
+    width: 100%;
 }
 
-.page-body {
-    margin: 20px;
+hr {
+    margin-top: 5px;
 }
