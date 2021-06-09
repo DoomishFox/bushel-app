@@ -54,6 +54,9 @@ def get_secret(secret, environment):
             # Deal with the exception here, and/or rethrow at your discretion.
             raise e
     else:
+        # attempt to just return the object first as a dict
+        # we dont care about the string whatever, we need it as a dict
+        return get_secret_value_response
         # Decrypts secret using the associated KMS CMK.
         # Depending on whether the secret is a string or binary, one of these fields will be populated.
         if 'SecretString' in get_secret_value_response:
