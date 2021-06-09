@@ -1,5 +1,4 @@
 import click
-import pathlib
 from flask.cli import with_appcontext
 from .database import init_db, destroy_db, shutdown_session, db_session
 from .models import User, Root, Branch, Leaf
@@ -43,8 +42,6 @@ def register_user_alias_command(username, alias):
 @with_appcontext
 def init_content_command():
     ''' Initialize base database content. '''
-    base_path = pathlib.Path("bushelapp/store/")
-    content_path = pathlib.Path("bushelapp/templates/content/").mkdir(parents=True, exist_ok=True)
 
     # initialize base root
     root_obj = db_session.query(Root).filter(Root.uri == 'root').first()
@@ -75,9 +72,17 @@ def init_content_command():
     formatMarkdown(leaf_obj, User("system", "Bushel".encode('utf-8')))
 
 
-def init_app_database(app):
+def init_database_extensions(app):
     app.teardown_appcontext(shutdown_session)
     app.cli.add_command(init_db_command)
     app.cli.add_command(register_user_command)
     app.cli.add_command(register_user_alias_command)
     app.cli.add_command(init_content_command)
+
+def verify_db_state():
+    """Verify the database state to ensure nothing needs to be created.
+    This is for first time running, to ensure that the database scheme
+    gets initialized properly."""
+    init_db()
+    # attempt to initialize base content
+    init_content_command()

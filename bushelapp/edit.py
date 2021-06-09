@@ -1,6 +1,4 @@
-import pathlib
 from flask import Blueprint, flash, g, redirect, render_template, request, session, url_for
-from werkzeug.security import check_password_hash, generate_password_hash
 from .database import db_session
 from .models import User, AuthToken, Root, Branch, Leaf
 from .markdown import getLeafContent, setLeafContent
@@ -22,8 +20,8 @@ def load_logged_in_user():
 
 @edit.route('/<root_name>/<branch_name>/<page_name>', methods=('GET', 'POST'), strict_slashes=False)
 def leaf(root_name, branch_name, page_name):
-    leaf_name = "New Leaf"
-    leaf_content = "New Leaf Content"
+    leaf_name = "Untitled Leaf"
+    leaf_content = "# Untitled Leaf\n\nSample leaf content."
     if g.user is None:
         # if theres no user session we need to redirect to the login page with a next url
         return redirect(url_for('auth.login', next='/edit/' + root_name + '/' + branch_name + '/' + page_name))

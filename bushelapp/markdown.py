@@ -1,10 +1,9 @@
 import requests
 import simplejson
-import pathlib
 import re
 import time
 
-from .database import db_session
+from .database import db_session, aurora_session
 from .models import Leaf
 
 def gitHubPost(text, mode, context):
@@ -19,9 +18,9 @@ def gitHubPost(text, mode, context):
         return r.content
     else:
         details = ''
-        for e in res['errors']:
+        for e in r['errors']:
             details += '{}.{}: {}.'.format(e['resource'], e['field'], e['code'])
-        print('[ERROR][HTTP {}] {} - {}'.format(r.status_code, res['message'], details))
+        print('[ERROR][HTTP {}] {} - {}'.format(r.status_code, r['message'], details))
         return None
 
 def formatMarkdown(leaf_obj, user_obj):
@@ -30,90 +29,72 @@ def formatMarkdown(leaf_obj, user_obj):
     # and store the result
     # we provide the uri all we need to do is create and save
     # the html
-    md_name = leaf_obj.uri + '.md'
-    html_name = leaf_obj.uri + '.html'
-    base_path = pathlib.Path("bushelapp/store/")
-    content_path = pathlib.Path("bushelapp/templates/content/")
 
-    # init path
-    content_path.mkdir(parents=True, exist_ok=True)
-    
+    md_dict = aurora_session.leafmd.find_one({ "_id": leaf_obj.uri })
+
     creation_success = False
+    # attempt to format markdown
+    content = gitHubPost(md_dict["content"], "markdown", None).decode('utf-8')
+    # if its successful prepare html
+    if content is not None:
+        # add the creation date here
+        # regex for the first headline
+        header_re = re.compile(r"<h1>(.|\n|\n\r)*?<\/h1>", re.MULTILINE)
+        match = header_re.search(content)
+        if match:
+            header_content = match.group()
+            # we've got our first headline, lets add some stuff after it
+            print("adding post header...")
+            header_metadata = '<ul class="metadata">'
+            header_metadata += '\n<li><time aria-label="Article creation date" datetime="'
+            header_metadata += time.strftime('%Y-%m-%dT00:00:00.000Z', time.gmtime(leaf_obj.date))
+            header_metadata += '">'
+            header_metadata += time.strftime('%m/%d/%y', time.gmtime(leaf_obj.date))
+            header_metadata += '</time></li>'
+            header_metadata += '\n<li class="metadata-user">'
+            if user_obj.alias is not None:
+                header_metadata += user_obj.alias.decode('utf-8')
+            else:
+                header_metadata += user_obj.username
+            header_metadata += '</li>\n</ul>'
 
-    # using the md file get all the text
-    with open(base_path / md_name, 'r', encoding='utf-8') as md_file:
-        # attempt to format markdown
-        content = gitHubPost(md_file.read(), "markdown", None).decode('utf-8')
-        # if its successful create html file
-        if content is not None:
-            with open(content_path / html_name, 'w', encoding='utf-8') as html_file:
-                # add the creation date here
-                # regex for the first headline
-                header_re = re.compile(r"<h1>(.|\n|\n\r)*?<\/h1>", re.MULTILINE)
-                match = header_re.search(content)
-                if match:
-                    header_content = match.group()
-                    # we've got our first headline, lets add some stuff after it
-                    print("adding post header...")
-                    header_metadata = '<ul class="metadata">'
-                    header_metadata += '\n<li><time aria-label="Article creation date" datetime="'
-                    header_metadata += time.strftime('%Y-%m-%dT00:00:00.000Z', time.gmtime(leaf_obj.date))
-                    header_metadata += '">'
-                    header_metadata += time.strftime('%m/%d/%y', time.gmtime(leaf_obj.date))
-                    header_metadata += '</time></li>'
-                    header_metadata += '\n<li class="metadata-user">'
-                    if user_obj.alias is not None:
-                        header_metadata += user_obj.alias.decode('utf-8')
-                    else:
-                        header_metadata += user_obj.username
-                    header_metadata += '</li>\n</ul>'
+            # add header metadata
+            header_content += '\n' + header_metadata + '\n'
 
-                    # add header metadata
-                    header_content += '\n' + header_metadata + '\n'
+            # assemble entire content
+            writable_content = content[:match.start()] + header_content + content[match.end():]
+        else:
+            writable_content = content
 
-                    # assemble entire content
-                    writable_content = content[:match.start()] + header_content + content[match.end():]
-                else:
-                    writable_content = content
-
-                # write the final content to the file
-                html_file.write(writable_content)
-                creation_success = True
+        # write the final content to aurora
+        html_dict = { "_id": leaf_obj.uri, "content": writable_content }
+        aurora_session.leafhtml.insert(html_dict)
+        creation_success = True
     
     if creation_success:
-        return html_name
+        return True
     else:
-        return None
+        return False
 
 def getLeafContent(leaf_obj):
     """Get text of leaf markdown file"""
-    md_name = leaf_obj.uri + '.md'
-    base_path = pathlib.Path("bushelapp/store/")
+    md_dict = aurora_session.leafmd.find_one({ "_id": leaf_obj.uri })
     
-    # using the md file get all the text
-    with open(base_path / md_name, 'r') as md_file:
-        content = md_file.read()
-    
-    return content
+    return md_dict["content"]
 
 def setLeafContent(leaf_obj, user_obj, leaf_content):
     """Set text of leaf markdown file"""
-    md_name = leaf_obj.uri + '.md'
-    base_path = pathlib.Path("bushelapp/store/")
-    
-    # using the md file get all the text
-    with open(base_path / md_name, 'w') as md_file:
-        # normalize line endings
-        md_file.write(leaf_content.replace('\r\n', '\n').replace('\r', '\n'))
+    # normalize line endings and format content as a dictionary/json
+    md_dict = { "_id": leaf_obj.uri, "content": leaf_content.replace('\r\n', '\n').replace('\r', '\n') }
+    # insert normalized leaf_content into aurora
+    aurora_session.leafmd.insert(md_dict)
     
     # update the leaf in the db
     db_session.flush()
-    db_session.query(Leaf).filter(Leaf.id == leaf_obj.id).update({'date': int(time.time())})
+    leaf_obj.date = int(int.time())
     db_session.commit()
-    # refresh just in case, i cant find anything on if this would refresh or not
-    # so i doubt it
-    leaf_obj = db_session.query(Leaf).filter(Leaf.id == leaf_obj.id).first()
 
+    # format the markdown into html on save for speed
     formatMarkdown(leaf_obj, user_obj)
     
     return leaf_obj

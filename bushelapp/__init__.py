@@ -1,5 +1,4 @@
 import os
-import jinja2
 from flask import Flask
 from . import error_pages
 
@@ -7,9 +6,8 @@ def create_app(test_config=None):
     app = Flask(__name__)
     app.config.from_mapping(
         SECRET_KEY='dev',
-        DATABASE=os.path.join(app.instance_path, 'db.sqlite'),
+        TEMPLATES_AUTO_RELOAD=True,
     )
-    app.config['TEMPLATES_AUTO_RELOAD'] = True
 
     if test_config is None:
         # load the instance config, if it exists, when not testing
@@ -18,16 +16,12 @@ def create_app(test_config=None):
         # load the test config if passed in
         app.config.from_mapping(test_config)
     
+    # register a 404 page
     app.register_error_handler(404, error_pages.page_not_found)
-
-    # ensure the instance folder exists
-    try:
-        os.makedirs(app.instance_path)
-    except OSError:
-        pass
     
-    from .database_extensions import init_app_database
-    init_app_database(app)
+    from .database_extensions import init_database_extensions, verify_db_state
+    init_database_extensions(app)
+    verify_db_state()
 
     # blueprint for auth routes in our app
     from .auth import auth as auth_blueprint
