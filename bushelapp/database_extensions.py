@@ -84,5 +84,3 @@ def verify_db_state():
     This is for first time running, to ensure that the database scheme
     gets initialized properly."""
     init_db()
-    # attempt to initialize base content
-    init_content_command()
