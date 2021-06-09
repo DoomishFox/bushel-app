@@ -8,13 +8,6 @@ def create_app(test_config=None):
         SECRET_KEY='dev',
         TEMPLATES_AUTO_RELOAD=True,
     )
-
-    if test_config is None:
-        # load the instance config, if it exists, when not testing
-        app.config.from_pyfile('config.py', silent=True)
-    else:
-        # load the test config if passed in
-        app.config.from_mapping(test_config)
     
     # register a 404 page
     app.register_error_handler(404, error_pages.page_not_found)
