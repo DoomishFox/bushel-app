@@ -5,7 +5,7 @@ from pymongo import MongoClient
 from .aws_secrets_manager import get_secret
 
 awsrds_block = get_secret("rds_connstr", "dev")
-awsrds_connstr = awsrds_block['engine'] + '+pymysql://' + awsrds_block['username'] + ':' + awsrds_block['password'] + '@' + awsrds_block['host'] + ':' + awsrds_block['port'] + '/' + awsrds_block['dbname']
+awsrds_connstr = str(awsrds_block['engine']) + '+pymysql://' + str(awsrds_block['username']) + ':' + str(awsrds_block['password']) + '@' + str(awsrds_block['host']) + ':' + str(awsrds_block['port']) + '/' + str(awsrds_block['dbname'])
 engine = create_engine(awsrds_connstr, convert_unicode=True)
 db_session = scoped_session(sessionmaker(autocommit=False,
                                          autoflush=False,
@@ -14,7 +14,7 @@ Base = declarative_base()
 Base.query = db_session.query_property()
 
 awsdocdb_block = get_secret("docdb_connstr", "dev")
-awsdocdb_connstr = awsdocdb_block['engine'] + '://' + awsdocdb_block['username'] + ':' + awsdocdb_block['password'] + '@' + awsdocdb_block['host'] + ':' + awsdocdb_block['port'] + '/?ssl=true&ssl_ca_certs=rds-combined-ca-bundle.pem&replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false'
+awsdocdb_connstr = str(awsdocdb_block['engine']) + '://' + str(awsdocdb_block['username']) + ':' + str(awsdocdb_block['password']) + '@' + str(awsdocdb_block['host']) + ':' + str(awsdocdb_block['port']) + '/?ssl=true&ssl_ca_certs=rds-combined-ca-bundle.pem&replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false'
 docdb_client = MongoClient(awsdocdb_connstr)
 docdb_session = docdb_client.bushelcontent
 

@@ -2,6 +2,7 @@
 # If you need more information about configurations or implementing the sample code, visit the AWS docs:   
 # https://aws.amazon.com/developers/getting-started/python/
 
+import json
 import os
 import boto3
 import base64
@@ -54,14 +55,12 @@ def get_secret(secret, environment):
             # Deal with the exception here, and/or rethrow at your discretion.
             raise e
     else:
-        # attempt to just return the object first as a dict
-        # we dont care about the string whatever, we need it as a dict
-        return get_secret_value_response
         # Decrypts secret using the associated KMS CMK.
         # Depending on whether the secret is a string or binary, one of these fields will be populated.
         if 'SecretString' in get_secret_value_response:
             secret = get_secret_value_response['SecretString']
-            return secret
         else:
-            decoded_binary_secret = base64.b64decode(get_secret_value_response['SecretBinary'])
-            return decoded_binary_secret
+            secret = base64.b64decode(get_secret_value_response['SecretBinary'])
+        
+        # convert string from json to a python dict
+        return json.loads(secret)
