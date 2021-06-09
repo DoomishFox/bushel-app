@@ -13,8 +13,8 @@ Base = declarative_base()
 Base.query = db_session.query_property()
 
 awsdocdb_connstr = os.environ['DOCDB_CONNSTR']
-aurora_client = MongoClient(awsdocdb_connstr)
-aurora_session = aurora_client.bushelcontent
+docdb_client = MongoClient(awsdocdb_connstr)
+docdb_session = docdb_client.bushelcontent
 
 def init_db():
     # import all modules here that might define models so that
@@ -26,7 +26,9 @@ def init_db():
 def destroy_db():
     # destroy all scheme and content in the database
     Base.metadata.drop_all(bind=engine)
+    docdb_session.leafmd.delete_many({})
+    docdb_session.leafhtml.delete_many({})
 
 def shutdown_session(exception=None):
     db_session.remove()
-    aurora_client.close()
+    docdb_client.close()

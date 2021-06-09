@@ -3,7 +3,7 @@ import simplejson
 import re
 import time
 
-from .database import db_session, aurora_session
+from .database import db_session, docdb_session
 from .models import Leaf
 
 def gitHubPost(text, mode, context):
@@ -30,7 +30,7 @@ def formatMarkdown(leaf_obj, user_obj):
     # we provide the uri all we need to do is create and save
     # the html
 
-    md_dict = aurora_session.leafmd.find_one({ "_id": leaf_obj.uri })
+    md_dict = docdb_session.leafmd.find_one({ "_id": leaf_obj.uri })
 
     creation_success = False
     # attempt to format markdown
@@ -68,7 +68,7 @@ def formatMarkdown(leaf_obj, user_obj):
 
         # write the final content to aurora
         html_dict = { "_id": leaf_obj.uri, "content": writable_content }
-        aurora_session.leafhtml.insert(html_dict)
+        docdb_session.leafhtml.insert(html_dict)
         creation_success = True
     
     if creation_success:
@@ -78,7 +78,7 @@ def formatMarkdown(leaf_obj, user_obj):
 
 def getLeafContent(leaf_obj):
     """Get text of leaf markdown file"""
-    md_dict = aurora_session.leafmd.find_one({ "_id": leaf_obj.uri })
+    md_dict = docdb_session.leafmd.find_one({ "_id": leaf_obj.uri })
     
     return md_dict["content"]
 
@@ -87,7 +87,7 @@ def setLeafContent(leaf_obj, user_obj, leaf_content):
     # normalize line endings and format content as a dictionary/json
     md_dict = { "_id": leaf_obj.uri, "content": leaf_content.replace('\r\n', '\n').replace('\r', '\n') }
     # insert normalized leaf_content into aurora
-    aurora_session.leafmd.insert(md_dict)
+    docdb_session.leafmd.insert(md_dict)
     
     # update the leaf in the db
     db_session.flush()

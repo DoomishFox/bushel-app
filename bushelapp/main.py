@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, abort
-from .database import db_session, aurora_session
+from .database import db_session, docdb_session
 from .models import Root, Branch, Leaf
 
 main = Blueprint('main', __name__)
@@ -19,7 +19,7 @@ def leaf(root_name, branch_name, page_name):
             # branch object found, go ahead and allow template to complete
             leaf_obj = db_session.query(Leaf).filter(Leaf.parent_id == branch_obj.id).filter(Leaf.uri == page_name).first()
             if leaf_obj is not None:
-                page_content = aurora_session.leafhtml.find_one({ "_id": leaf_obj.uri })['content']
+                page_content = docdb_session.leafhtml.find_one({ "_id": leaf_obj.uri })['content']
                 return render_template("leaf.html", root=root_obj, branch=branch_obj, page=leaf_obj, page_html=page_content)
     abort(404)
 
