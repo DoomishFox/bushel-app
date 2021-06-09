@@ -14,7 +14,7 @@ Base = declarative_base()
 Base.query = db_session.query_property()
 
 awsdocdb_block = get_secret("docdb_connstr", "dev")
-awsdocdb_connstr = str(awsdocdb_block['engine']) + '://' + str(awsdocdb_block['username']) + ':' + str(awsdocdb_block['password']) + '@' + str(awsdocdb_block['host']) + ':' + str(awsdocdb_block['port']) + '/?ssl=true&ssl_ca_certs=rds-combined-ca-bundle.pem&replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false'
+awsdocdb_connstr = 'mongodb://' + str(awsdocdb_block['username']) + ':' + str(awsdocdb_block['password']) + '@' + str(awsdocdb_block['host']) + ':' + str(awsdocdb_block['port']) + '/?ssl=true&ssl_ca_certs=rds-combined-ca-bundle.pem&replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false'
 docdb_client = MongoClient(awsdocdb_connstr)
 docdb_session = docdb_client.bushelcontent
 
