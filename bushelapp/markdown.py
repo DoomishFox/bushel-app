@@ -35,7 +35,7 @@ def formatMarkdown(leaf_obj, user_obj):
 
     creation_success = False
     # attempt to format markdown
-    content = gitHubPost(str(md_dict["content"]), "markdown", None).decode('utf-8')
+    content = gitHubPost(md_dict["content"], "markdown", None).decode('utf-8')
     # if its successful prepare html
     if content is not None:
         # add the creation date here
@@ -94,7 +94,7 @@ def setLeafContent(leaf_obj, user_obj, leaf_content):
     
     # update the leaf in the db
     db_session.flush()
-    leaf_obj.date = int(int.time())
+    leaf_obj.date = int(time.time())
     db_session.commit()
 
     # format the markdown into html on save for speed

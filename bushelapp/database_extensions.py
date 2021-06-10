@@ -74,7 +74,7 @@ def init_content_command():
     with open(base_path / md_name) as file:
         # save the page html
         # this also acts as a test of the html to markdown system :D
-        setLeafContent(leaf_obj, User("system", "Bushel".encode('utf-8')), file.readlines())
+        setLeafContent(leaf_obj, User("system", "Bushel".encode('utf-8')), file.read())
 
 
 def init_database_extensions(app):
