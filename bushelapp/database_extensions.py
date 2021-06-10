@@ -1,8 +1,8 @@
 import click
 from flask.cli import with_appcontext
-from .database import init_db, destroy_db, shutdown_session, db_session
+from .database import init_db, destroy_db, shutdown_session, db_session, docdb_session
 from .models import User, Root, Branch, Leaf
-from .markdown import formatMarkdown
+from .markdown import formatMarkdown, setLeafContent
 
 @click.command('init-db')
 @with_appcontext
@@ -66,10 +66,12 @@ def init_content_command():
         db_session.add(leaf_obj)
         db_session.commit()
         click.echo('Created leaf "an-introduction"')
-
-    # save the page html
-    # this also acts as a test of the html to markdown system :D
-    formatMarkdown(leaf_obj, User("system", "Bushel".encode('utf-8')))
+    
+    # initialize introduction page document
+    with open('store/an-introduction.md') as file:
+        # save the page html
+        # this also acts as a test of the html to markdown system :D
+        setLeafContent(leaf_obj, User("system", "Bushel".encode('utf-8')), file.readlines())
 
 
 def init_database_extensions(app):

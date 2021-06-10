@@ -1,3 +1,4 @@
+from bushelapp.main import leaf
 import requests
 import simplejson
 import re
@@ -34,7 +35,7 @@ def formatMarkdown(leaf_obj, user_obj):
 
     creation_success = False
     # attempt to format markdown
-    content = gitHubPost(md_dict["content"], "markdown", None).decode('utf-8')
+    content = gitHubPost(str(md_dict["content"]), "markdown", None).decode('utf-8')
     # if its successful prepare html
     if content is not None:
         # add the creation date here
@@ -67,8 +68,9 @@ def formatMarkdown(leaf_obj, user_obj):
             writable_content = content
 
         # write the final content to aurora
-        html_dict = { "_id": leaf_obj.uri, "content": writable_content }
-        docdb_session.leafhtml.insert(html_dict)
+        html_key = { "_id": leaf_obj.uri }
+        html_dict = { "content": writable_content }
+        docdb_session.leafhtml.update(html_key, html_dict, upsert=True)
         creation_success = True
     
     if creation_success:
@@ -85,9 +87,10 @@ def getLeafContent(leaf_obj):
 def setLeafContent(leaf_obj, user_obj, leaf_content):
     """Set text of leaf markdown file"""
     # normalize line endings and format content as a dictionary/json
-    md_dict = { "_id": leaf_obj.uri, "content": leaf_content.replace('\r\n', '\n').replace('\r', '\n') }
+    md_key = { "_id": leaf_obj.uri }
+    md_dict = { "content": leaf_content.replace('\r\n', '\n').replace('\r', '\n') }
     # insert normalized leaf_content into aurora
-    docdb_session.leafmd.insert(md_dict)
+    docdb_session.leafmd.update(md_key, md_dict, upsert=True)
     
     # update the leaf in the db
     db_session.flush()
