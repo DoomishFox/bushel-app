@@ -1,4 +1,5 @@
 import click
+import pathlib
 from flask.cli import with_appcontext
 from .database import init_db, destroy_db, shutdown_session, db_session, docdb_session
 from .models import User, Root, Branch, Leaf
@@ -67,8 +68,10 @@ def init_content_command():
         db_session.commit()
         click.echo('Created leaf "an-introduction"')
     
+    base_path = pathlib.Path("bushelapp/store/")
+    md_name = 'an-introduction.md'
     # initialize introduction page document
-    with open('store/an-introduction.md') as file:
+    with open(base_path / md_name) as file:
         # save the page html
         # this also acts as a test of the html to markdown system :D
         setLeafContent(leaf_obj, User("system", "Bushel".encode('utf-8')), file.readlines())
