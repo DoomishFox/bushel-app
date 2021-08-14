@@ -1,0 +1,42 @@
+.highlight-source-cs::before {
+    content: "C#";
+}
+
+.highlight-source-json::before {
+    content: "JSON";
+}
+
+.highlight-source-sql::before {
+    content: "SQL";
+}
+
+.highlight {
+    color: var(--code-color);
+    tab-size: 4;
+    -moz-tab-size: 4;
+    -o-tab-size: 4;
+}
+
+.highlight .pl-en {
+    color: var(--code-color);
+}
+
+.highlight .pl-k {
+    color: var(--code-operator);
+}
+
+.highlight .pl-s {
+    color: var(--code-string);
+}
+
+.highlight .pl-pds {
+    color: var(--code-string);
+}
+
+.highlight .pl-smi {
+    color: var(--code-variable);
+}
+
+.highlight .pl-c1 {
+    color: var(--code-type);
+}

@@ -29,6 +29,10 @@ def create_app(test_config=None):
     from .database_extensions import init_app_database
     init_app_database(app)
 
+    # blueprint for api routes
+    from .api import api as api_blueprint
+    app.register_blueprint(api_blueprint)
+
     # blueprint for auth routes in our app
     from .auth import auth as auth_blueprint
     app.register_blueprint(auth_blueprint)

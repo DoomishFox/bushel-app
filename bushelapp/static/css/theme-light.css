@@ -9,11 +9,11 @@
     --text-inactive: #B0B0B0;
     --text-subtle: lightgrey;
     --background-standout: #f5f5f5;
-    --code-color: black;
+    --code-color: rgb(0, 0, 0);
     --code-string: #c44b4b;
-    --code-variable: red;
-    --code-operator: yellow;
-    --code-type: blue;
+    --code-variable: rgb(0, 58, 133);
+    --code-operator: rgb(117, 0, 133);
+    --code-type: rgb(0, 26, 255);
     /* Bushel Theme Colors */
     --bushel-primary: #d5d286;
 }

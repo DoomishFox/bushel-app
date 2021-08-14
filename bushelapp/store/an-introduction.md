@@ -6,4 +6,4 @@ Because there didn't appear to be a small, lightweight wiki/digital garden syste
 
 ### The Site
 It's a pretty rudimentary flask application that uses GitHub's markdown api to create static html snippets. It's by no means the best solution, but it works and it's fairly fast.
-You'll probably notice the similarities to Microsoft's docs site, both in styling and the fact that it too bases it's content off md files. This is for two reasons: one being that I really like md syntax, and two being that I really like Microsoft's docs site.
+You'll probably notice the similarities to Microsoft's docs site, both in styling and the fact that it too bases it's content off md files. This is for two reasons: one being that I really like md syntax, and two being that I really like Microsoft's docs site. [test](https://bushel-app.com/home/a-little-bit-of-everything/home)

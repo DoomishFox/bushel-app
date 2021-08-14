@@ -1,3 +1,4 @@
+from os import pardir
 import requests
 import simplejson
 import pathlib
@@ -5,7 +6,7 @@ import re
 import time
 
 from .database import db_session
-from .models import Leaf
+from .models import Backlink, Leaf
 
 def gitHubPost(text, mode, context):
     """Send a POST request to GitHub via API """
@@ -23,6 +24,33 @@ def gitHubPost(text, mode, context):
             details += '{}.{}: {}.'.format(e['resource'], e['field'], e['code'])
         print('[ERROR][HTTP {}] {} - {}'.format(r.status_code, res['message'], details))
         return None
+
+def createBacklinks(leaf_obj, leaf_content):
+    """Create backlink objects based on links in the leaf"""
+    # we just need to regex the text for md style links that go
+    # to a page on bushel and create a backlink for them
+
+    # regex for the first headline
+    # (i need a way to check for localhost:5000 as well for testing)
+    link_re = re.compile(r"(https?:\/\/)?(www\.)?bushel-app\.com\/(.+?\/)(.+?\/)([-a-zA-Z0-9@:%_\+.~#?&=]*)", re.MULTILINE)
+    #link_re = re.compile(r"localhost:5000\/(.+?\/)(.+?\/)([-a-zA-Z0-9@:%_\+.~#?&=]*)", re.MULTILINE)
+    matches = link_re.finditer(leaf_content)
+    for match in matches:
+        print(f"Matched backlink: {match.group()}")
+        # for each match we want to get the link and attempt to
+        # parse the leaf uri from it if available
+        if (match.group(5)):
+            # we got a match, lets get the target leaf
+            print(f"Creating backlink for {match.group(5)}")
+            target_obj = db_session.query(Leaf).filter(Leaf.uri == match.group(5)).one()
+
+            backlink_obj = db_session.query(Backlink).filter(Backlink.parent_id == leaf_obj.id).filter(Backlink.target_id == target_obj.id).first()
+
+            if backlink_obj is None:
+                # now we can create a backlink if it doesnt exist
+                backlink_obj = Backlink().create(leaf_obj.id, target_obj.id)
+                db_session.add(backlink_obj)
+                db_session.commit()
 
 def formatMarkdown(leaf_obj, user_obj):
     """Convert a leaf's markdown file to HTML"""
@@ -105,6 +133,9 @@ def setLeafContent(leaf_obj, user_obj, leaf_content):
     with open(base_path / md_name, 'w') as md_file:
         # normalize line endings
         md_file.write(leaf_content.replace('\r\n', '\n').replace('\r', '\n'))
+    
+    # create backlinks from the inputted content
+    createBacklinks(leaf_obj, leaf_content)
     
     # update the leaf in the db
     db_session.flush()

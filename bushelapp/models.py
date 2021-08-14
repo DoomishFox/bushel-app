@@ -35,10 +35,6 @@ class AuthToken(Base):
         self.user_id = user.id
         return self
 
-    def refresh_token(self):
-        if self.expires >= int(time.time()):
-            expires = int(time.time() + 1200000)
-
     
 class Backlink(Base):
     __tablename__ = 'backlinks'
@@ -48,6 +44,11 @@ class Backlink(Base):
         ForeignKey('leaves.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False)
     target_id = Column(Integer,
         ForeignKey('leaves.id', onupdate='CASCADE', ondelete='CASCADE'), nullable=False)
+
+    def create(self, parent_leaf_id, target_leaf_id):
+        self.parent_id = parent_leaf_id
+        self.target_id = target_leaf_id
+        return self
 
 class Leaf(Base):
     __tablename__ = 'leaves'
@@ -67,7 +68,7 @@ class Leaf(Base):
         return self
 
     def __repr__(self):
-        return '<Leaf {}>'.format(self.title)
+        return '<Leaf {}>'.format(self.uri)
 
 class Branch(Base):
     __tablename__ = 'branches'
@@ -85,7 +86,7 @@ class Branch(Base):
         return self
 
     def __repr__(self):
-        return '<Branch {}>'.format(self.name)
+        return '<Branch {}>'.format(self.uri)
 
 class Root(Base):
     __tablename__ = 'roots'

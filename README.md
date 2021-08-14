@@ -1,25 +1,16 @@
 # Bushel
-this is a heavy wip, lots is gonna change. so far this file is mostly just my notes about the project, but im going to clean it up soon.
+Bushel is a bare-bones, self-contained digital gardening system. A digital garden is kind of like a wiki; a space for one to write small interlinked documents without the rigid structure of a blog.
 
-#### Try it Out
-its hosted on [bushel-app.com](https://bushel-app.com)!
+### Why bushel?
+Because there didn't appear to be a small, lightweight wiki/digital garden system where I could update content from the browser. And I know I'm lazy enough I would never update it if I couldn't do it from my phone. So I made many bad decisions and ended up with bushel!
 
-#### Data Structure
-so everythings gonna be in flat files. specifically, flat md files. flask is going to grab them, render them to html using githubs markdown api, then insert them into a template or two and serve that. each page will have an edit link like ms docs which will route you through an auth page to an edit page for the specified uri which maps to a flat file. on save it will save your md file along with its acompanying html file to disk.
-NOTE: the md -> html conversion happens on page save, not on page load.
+### The Site
+It's a pretty rudimentary flask application that uses GitHub's markdown api to create static html snippets. It's by no means the best solution, but it works and it's fairly fast.
 
-landing pages will be dynamically using the sqlite db generated. searching inside pages will be unsupported, use google or find-on-page cause its just flat files. search of page title can be accomplished with the sqlite db but im not sure i want that.
+You'll probably notice the similarities to Microsoft's docs site, both in styling and the fact that it too bases it's content off md files. This is for two reasons: one being that I really like md syntax, and two being that I really like Microsoft's docs site.
 
-#### Tables
-so theres users of course
+### What's coming
+I'll probably be fixing and tweaking this site for a while, but for more immediate things you can check out the [roadmap](https://bushel-app.com/root/introduction/bushels-roadmap).
 
-there are roots. roots are the base containers. branches and leaves can belong to a single root to prevent cross contamination. roots are part of the url.
-
-there are branches. branches are purely organizaional. they have a name and ran link to other branches and leaves.
-
-there are leaves. leaves are the actual content rendered from md files.
-
-oh and the whole tokens thing is... interesting. i might change that but for the level of security i care about i think itll be fine.
-
-## Running
-activate the python venv and then `set FLASK_DEBUG=1`, `set FLASK_APP=bushelapp` (I have this set in my env activate). then you can just run `flask run`
+# Running
+Active the python3 venv then set `FLASK_DEBUG=1` and `FLASK_APP=bushelapp` (I have this set in my venv activate). Then you can just run `flask run` and browse to `http://localhost:5000`.

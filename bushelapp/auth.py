@@ -1,4 +1,5 @@
 from flask import Blueprint, flash, g, redirect, render_template, request, session, url_for
+import time
 from werkzeug.security import check_password_hash
 from .database import db_session
 from .models import User, AuthToken
@@ -17,6 +18,9 @@ def redirect_dest(fallback):
 
 def scrub_db_tokens():
     # scrub the db of expired tokens
+    db_session.flush()
+    db_session.query(AuthToken).filter(AuthToken.expires < int(time.time())).delete()
+    db_session.commit()
     return
 
 @auth.before_app_request
@@ -27,6 +31,7 @@ def load_logged_in_user():
         g.user = None
     else:
         auth_token_obj = db_session.query(AuthToken).filter(AuthToken.token == token).first()
+
         if auth_token_obj is not None:
             g.user = db_session.query(User).filter(User.id == auth_token_obj.user_id).first()
         else:
@@ -35,9 +40,11 @@ def load_logged_in_user():
 @auth.route('/login', methods=('GET', 'POST'), strict_slashes=False)
 def login():
     if request.method == 'POST':
+
         username = request.form['username']
         password = request.form['password']
         remember = request.form.get('remember')
+
         error = None
         user = db_session.query(User).filter(User.username == username).first()
 
@@ -77,9 +84,11 @@ def logout():
     # remove the token from the browser
     session['token'] = None
 
-    # expire the token
-
-    # scrub old tokens
+    # find the token
+    token_obj = db_session.query(AuthToken).filter(AuthToken.token == token).first()
+    # expire the token obj
+    token_obj.expire_token()
+    # scrub all expired tokens
     scrub_db_tokens()
 
     # then attempt a redirect based on the 'next' url parameter

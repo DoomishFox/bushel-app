@@ -48,6 +48,7 @@ def leaf(root_name, branch_name, page_name):
 
                 if leaf_obj is None:
                     # create one if it doesnt exist
+                    print("Creating new leaf!")
                     leaf_obj = Leaf().create(page_name, leaf_name, branch_obj)
                     db_session.add(leaf_obj)
                     db_session.commit()
