@@ -115,3 +115,10 @@ def root(root_name):
 
     # here we edit a root if it exists, or if it doesnt exist we create it
     return render_template("edit/root.html", root_name=root_name)
+
+@edit.route('/', strict_slashes=False)
+def index():
+    if g.user is None:
+        # if theres no user session we need to redirect to the login page with a next url
+        return redirect(url_for('auth.login', next='/edit/'))
+    return render_template("edit/react.html")

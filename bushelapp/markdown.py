@@ -7,6 +7,7 @@ import time
 
 from .database import db_session
 from .models import Backlink, Leaf
+from .plugin_handler import PluginHandler, PluginCollection, plugins
 
 def gitHubPost(text, mode, context):
     """Send a POST request to GitHub via API """
@@ -48,6 +49,7 @@ def createBacklinks(leaf_obj, leaf_content):
 
             if backlink_obj is None:
                 # now we can create a backlink if it doesnt exist
+                # technically we should be deleting all old backlinks
                 backlink_obj = Backlink().create(leaf_obj.id, target_obj.id)
                 db_session.add(backlink_obj)
                 db_session.commit()
@@ -103,6 +105,26 @@ def formatMarkdown(leaf_obj, user_obj):
                     writable_content = content[:match.start()] + header_content + content[match.end():]
                 else:
                     writable_content = content
+                
+                # apply plugins after markdown format
+                plugin_re = re.compile(r"\[~:([a-zA-Z]+?):([a-zA-Z]+?)(\.([a-zA-Z0-9].?))?\](\(.*?\))?", re.MULTILINE)
+                for plugin_match in plugin_re.finditer(writable_content):
+                    print(f"Finding plugin for match '{plugin_match.group()}'")
+                    plugin_collection = plugin_match.group(1)
+                    plugin_func = plugin_match.group(2)
+                    plugin_arg = plugin_match.group(4)
+                    plugin_context = plugin_match.group(5)
+                    active_plugin_collection = plugins.get_collection(plugin_collection)
+                    if active_plugin_collection is not None:
+                        try:
+                            result = active_plugin_collection.apply_plugin(plugin_func, plugin_arg, plugin_context)
+                            if result is not None:
+                                writable_content = writable_content[:plugin_match.start()] + result + writable_content[plugin_match.end():]
+                                print(f"Successfully applied plugin!")
+                        except:
+                            print("WARN: Plugin internal error!")
+                    else:
+                        print(f"WARN: Could not apply plugin for match '{plugin_match.group()}'!")
 
                 # write the final content to the file
                 html_file.write(writable_content)

@@ -87,7 +87,7 @@ def logout():
     # find the token
     token_obj = db_session.query(AuthToken).filter(AuthToken.token == token).first()
     # expire the token obj
-    token_obj.expire_token()
+    #token_obj.expire_token()
     # scrub all expired tokens
     scrub_db_tokens()
 
