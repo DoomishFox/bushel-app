@@ -108,7 +108,7 @@ def formatMarkdown(leaf_obj, user_obj):
                 
                 # apply plugins after markdown format
                 plugin_re = re.compile(r"\[~:([a-zA-Z]+?):([a-zA-Z]+?)(\.([a-zA-Z0-9].?))?\](\(.*?\))?", re.MULTILINE)
-                for plugin_match in plugin_re.finditer(writable_content):
+                for plugin_match in reversed(list(plugin_re.finditer(writable_content))):
                     print(f"Finding plugin for match '{plugin_match.group()}'")
                     plugin_collection = plugin_match.group(1)
                     plugin_func = plugin_match.group(2)

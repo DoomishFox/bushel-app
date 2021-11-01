@@ -1,4 +1,3 @@
-from flask.globals import g
 from ..plugins import Plugin
 import uuid
 
@@ -14,29 +13,22 @@ class TableOfContents(Plugin):
         self.description = 'Table of contents module'
 
     def build_result(self):
-        guid = uuid.uuid4()
-        return f'<div class="block">\
-<ul id="{guid}" class="element-list"></ul>\
-<script>\
-newItem = function(leaf) {{\
-let arrow = document.createElement("span");\
-arrow.innerText = ">";\
-let link = document.createElement("a");\
-link.classList.add("highlight-link");\
-link.href = `/{{{{ root.uri }}}}/{{{{ branch.uri }}}}/${{leaf.uri}}`;\
-link.innerText = leaf.name;\
-link.appendChild(arrow);\
-let li = document.createElement("li");\
-li.appendChild(link);\
-return li;\
-}};\
-window.onload = async function() {{\
-let list = document.getElementById("{guid}");\
-let result = await fetch("/api/branches/{{{{ branch.uri }}}}/leaves")\
-.then(response => response.json());\
-result.leaves.map(leaf => list.appendChild(newItem(leaf)));\
-}}\
-</script>\
+        guid = f"g{uuid.uuid4()}"
+        return f'<div class="block">\n\
+<ul id="{guid}" class="element-list"></ul>\n\
+<script>\n\
+    "use strict";\n\
+    (async function() {{\n\
+      const list = document.querySelector("#{guid}");\n\
+      let request = await fetch("/api/branches/{{{{ branch.uri }}}}/leaves");\n\
+      let data = await request.json();\n\
+      let markup = [];\n\
+      data.leaves.forEach(leaf => {{\n\
+        markup.push(`<li><a class="highlight-link" href="/{{{{ root.uri }}}}/{{{{ branch.uri }}}}/${{leaf.uri}}">${{leaf.name}}<span>&gt</span></a></li>`);\n\
+      }});\n\
+      list.insertAdjacentHTML("beforeend", markup.join(""))\n\
+    }}());\n\
+    </script>\n\
 </div>'
 
     def parse(self, context):
